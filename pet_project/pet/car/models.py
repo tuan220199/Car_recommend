@@ -22,7 +22,7 @@ class Category(models.Model):
     groups = models.CharField(max_length=30)
 
     def __str__(self):
-        return f"{self.group}" 
+        return f"{self.groups}" 
 
 class Car(models.Model):
     price = models.FloatField()

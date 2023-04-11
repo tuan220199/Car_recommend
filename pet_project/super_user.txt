@@ -1,0 +1,10 @@
+super-user:
+username: phammanhtuan
+email: phamtuan.220199@gmail.com
+Password: Tuan04071972=
+Other users:
+username password
+tuan Tuan220199
+ly Ly123456
+minh	Minh13579
+linh Linh1234
