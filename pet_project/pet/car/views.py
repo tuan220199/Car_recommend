@@ -9,4 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from .models import *
 
-# Create your views here.
+
+def index(request):
+    return render(request, "car/index.html")
