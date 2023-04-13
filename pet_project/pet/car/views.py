@@ -14,9 +14,8 @@ def index(request):
     return render(request, "car/index.html")
 
 def cars(request):
-    cars = Car.objects.all()
-    data = {"cars": list(cars.values())}
-    return JsonResponse(data)
+    cars = Car.objects.order_by("-id").all()
+    return JsonResponse([car.serialize() for car in cars], safe=False)
 
 def login_view(request):
     if request.method == "POST":

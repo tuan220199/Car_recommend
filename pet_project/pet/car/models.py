@@ -40,6 +40,23 @@ class Car(models.Model):
     mark_category =  models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="category")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="owner")
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "owner": self.owner.username,
+            "price": self.price,
+            "year": self.year,
+            "mileage": self.mileage,
+            "engine_capacity": self.engine_capacity,
+            "model": self.model,
+            "transmission": self.transmission,
+            "drive": 2 if self.drive == "2wd" else 4,
+            "hand_drive": self.hand_drive,
+            "fuel": self.fuel,
+            "image_url": self.image_url,
+            "mark_category": self.mark_category.groups
+        }
+
 class Watch_list(models.Model):
     user_watch_list = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank= True, related_name="user_watch_list")
     list_watch = models.ForeignKey(Car, on_delete=models.CASCADE, null=True, blank= True, related_name="list_watch")

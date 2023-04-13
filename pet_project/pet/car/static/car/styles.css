@@ -176,88 +176,120 @@ li {
     text-decoration: underline;
   }
 
-  .card {
-    max-width: 320px;
-    border-radius: 1rem;
-    background-color: rgba(31, 41, 55, 1);
-    padding: 1rem;
+  article.card.car-details {
+    border: 1px solid #f8f9fa;
+    box-shadow: 0 0 20px 0px #dee2e6;
+    cursor: pointer;
+    overflow: hidden;
+    -webkit-transition: 0.3s all;
+    -moz-transition: 0.3s all;
+    -ms-transition: 0.3s all;
+    -o-transition: 0.3s all;
+    transition: 0.3s all;
   }
-  
-  .infos {
+  article.card.car-details h3 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  article.card.car-details ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  article.card.car-details ul li {
+    margin-bottom: 1rem;
+  }
+  article.card.car-details ul li i {
+    width: 24px;
+  }
+  article.card.car-details ul.rating {
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    grid-gap: 1rem;
-    gap: 1rem;
+    font-size: 0.95rem;
+    margin-top: 1rem;
   }
-  
-  .image {
-    height: 7rem;
-    width: 7rem;
-    border-radius: 0.5rem;
-    background-color: rgb(118, 36, 194);
-    background: linear-gradient(to bottom right, rgb(118, 36, 194), rgb(185, 128, 240));
+  article.card.car-details ul.rating li {
+    margin-bottom: 0;
   }
-  
-  .info {
-    height: 7rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  article.card.car-details ul.rating li:not(:last-child) {
+    margin-right: 0.25rem;
   }
-  
-  .name {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 1);
+  article.card.car-details .thumbnail {
+    width: 220px;
+    height: 170px;
+    margin-right: 1rem;
+    border: 1px solid #e9ecef;
+    cursor: zoom-in;
   }
-  
-  .function {
-    font-size: 0.75rem;
-    line-height: 1rem;
-    color: rgba(156, 163, 175, 1);
+  article.card.car-details .thumbnail:after {
+    content: "\f00e";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid #e9ecef;
+    background: #0000000d;
+    color: #6c757d;
   }
-  
-  .stats {
-    width: 100%;
-    border-radius: 0.5rem;
-    background-color: rgba(255, 255, 255, 1);
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    color: rgba(0, 0, 0, 1);
+  article.card.car-details:not(:last-child) {
+    margin-bottom: 2rem;
   }
-  
-  .flex {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 4px;
+  article.card.car-details:hover {
+    background: #f8f9fa;
   }
-  
-  .state-value {
-    font-weight: 700;
-    color: rgb(118, 36, 194);
-  }
-  
-  .request {
-    margin-top: 1.5rem;
-    width: 100%;
-    border: 1px solid transparent;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
-    transition: all .3s ease;
-  }
-  
-  .request:hover {
-    background-color: rgb(118, 36, 194);
+  article.card.car-details:before {
+    width: 200px;
     color: #fff;
+    position: absolute;
+    transform: rotate(-45deg);
+    z-index: 1;
+    text-align: center;
+    padding: 0.35rem;
+    top: 35px;
+    left: -50px;
+    font-weight: bold;
+  }
+  article.card.car-details.new:before {
+    content: "NEW";
+  }
+  article.card.car-details.sponsored:before {
+    content: "SPONSORED";
+  }
+  article.card.car-details.label-info:before {
+    background: #1DA1F2;
+  }
+  article.card.car-details.label-primary:before {
+    background: #004b9d;
+  }
+  article.card.car-details.label-success:before {
+    background: #218939;
+  }
+  article.card.car-details.label-warning:before {
+    background: #cb9b08;
+  }
+  article.card.car-details.label-danger:before {
+    background: #b23737;
+  }
+  article.card.car-details.label-purple:before {
+    background: #7032c2;
   }
   
+  .text-grey {
+    color: #bbbbbb;
+  }
+  
+  .btn-default {
+    background: #fff;
+    border: 1px solid #e9ecef;
+  }
+  .btn-default i {
+    color: #8e6c06;
+  }
+
+  .image {
+    width: 100%; /* set the width of the image to 100% of the div */
+    height: auto; /* set the height of the image to auto to maintain aspect ratio */
+    object-fit: cover; /* scale the image to cover the entire container */
+  }

@@ -24,41 +24,64 @@
                 return (
                     <div>
                         {cars.map(car => (
-                            <div key={car.id}>
-                                <div class="card">
-                                    <div class="infos">
-                                        <div class="image"><img src={car.image_url} alt={car.model} /></div>
-                                        <div class="info">
-                                            <div>
-                                                <p class="name">
-                                                    {car.model}
-                                                </p>
-                                                <p class="function">
-                                                    ${car.price} 
-                                                </p>
+                            <div key={car["id"]}>
+                                <div class="col-12">
+                                <article class="card car-details label-info sponsored">
+                                    <div class="card-body">
+                                        <div class="d-flex flex-md-row align-items-md-start align-items-center flex-column">
+                                            <div class="thumbnail position-relative mb-md-0 mb-3">
+                                                <img src={car["image_url"]} alt={car["model"]} class="image"/>
                                             </div>
-                                            <div class="stats">
-                                                    <p class="flex flex-col">
-                                                        Articles
-                                                        <span class="state-value">
-                                                            34
-                                                        </span>
-                                                    </p>
-                                                    <p class="flex">
-                                                        Followers
-                                                        <span class="state-value">
-                                                            455
-                                                        </span>
-                                                    </p>
-                                                    
+                                            <div class="w-100">
+                                                <div class="d-flex flex-md-row flex-column">
+                                                    <h3 class="mr-3">{car["model"]}</h3>
+                                                    <div class="ml-auto text-right">
+                                                        <h3>${car["price"]}</h3>
+                                                        <ul class="rating">
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-grey"></i></li>
+                                                            <li><i class="fas fa-star text-grey"></i></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <hr/>
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-12">
+                                                            <ul>
+                                                                <li><i class="fas fa-tachometer-alt"></i> <strong>Millage:</strong> {car["mileage"]}KM </li>
+                                                                <li><i class="fas fa-users"></i> <strong>Prev Owners:</strong> {car['owner']}</li>
+                                                                <li><i class="fas fa-calendar"></i> <strong>Brand: </strong> {car['mark_category']}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Transmission:</strong> {car['transmission']}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Engine Capacity:</strong> {car["engine_capacity"]}</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-8 col-12">
+                                                            <ul>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Fuel Type:</strong> {car["fuel"]} </li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Drive:</strong> {car["drive"]}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Hand Drive:</strong> {car["hand_drive"]}</li>
+                                                                <li data-toggle="tooltip" title="The emission class determines the tax bracket of a vehicle. You can find it under number 14 in the registration certificate part 1 (vehicle registration)."><i class="fas fa-info-circle"></i> <strong>Emission Class:</strong> 1,390cc</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Engine Capacity:</strong> {car["engine_capacity"]}</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="d-flex flex-md-row flex-column align-items-center justify-content-end">
+                                                                <button class="btn btn-success w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-phone"></i> Contact Seller</button>
+                                                                <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-parking"></i> Park</button>
+                                                                <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <button class="request" type="button">
-                                            Contact
-                                        </button>
+                                </article>
                                 </div>
-                            </div>
+                            </div>   
                         ))}
                     </div>
                 );
