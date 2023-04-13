@@ -13,6 +13,11 @@ from .models import *
 def index(request):
     return render(request, "car/index.html")
 
+def cars(request):
+    cars = Car.objects.all()
+    data = {"cars": list(cars.values())}
+    return JsonResponse(data)
+
 def login_view(request):
     if request.method == "POST":
 

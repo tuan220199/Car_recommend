@@ -1,5 +1,69 @@
 {% extends "car/layout.html" %}
 {% block title %}Home{% endblock %}
 {% block body %}
-    <p>Hello</p>
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        class CarList extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    cars: []
+                };
+            }
+
+            componentDidMount() {
+                fetch("api/cars/")
+                    .then(response => response.json())
+                    .then(data => this.setState({ cars: data.cars }));
+            }
+
+            render() {
+                const { cars } = this.state;
+                return (
+                    <div>
+                        {cars.map(car => (
+                            <div key={car.id}>
+                                <div class="card">
+                                    <div class="infos">
+                                        <div class="image"><img src={car.image_url} alt={car.model} /></div>
+                                        <div class="info">
+                                            <div>
+                                                <p class="name">
+                                                    {car.model}
+                                                </p>
+                                                <p class="function">
+                                                    ${car.price} 
+                                                </p>
+                                            </div>
+                                            <div class="stats">
+                                                    <p class="flex flex-col">
+                                                        Articles
+                                                        <span class="state-value">
+                                                            34
+                                                        </span>
+                                                    </p>
+                                                    <p class="flex">
+                                                        Followers
+                                                        <span class="state-value">
+                                                            455
+                                                        </span>
+                                                    </p>
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="request" type="button">
+                                            Contact
+                                        </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                );
+            }
+        }
+        ReactDOM.render(<CarList />, document.getElementById("root"))
+    </script>
 {% endblock %}
