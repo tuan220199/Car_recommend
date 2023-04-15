@@ -8,5 +8,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
 
     #API path
-    path("api/cars/", views.cars, name="cars")
+    path("api/cars/", views.cars, name="cars"),
+    path("api/pagnigation/", views.pagnigation, name="pagnigation")
+    
 ]

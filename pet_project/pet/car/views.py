@@ -11,7 +11,32 @@ from .models import *
 
 
 def index(request):
-    return render(request, "car/index.html")
+    cars = Car.objects.order_by("-id").all()
+    return render(request, "car/index.html", {
+        'cars': cars
+    })
+
+def pagnigation(request):
+    cars = Car.objects.order_by("-id").all()
+
+    #Pagination 
+    paginator = Paginator(cars, 10) # Show 10 posts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    car_list = []
+    for car in page_obj:
+        car_list.append(car.serialize())
+
+    data = {
+        'results': car_list,
+        'count': paginator.count,
+        'num_pages': page_number,
+    }
+
+    return JsonResponse(data)
+
+
 
 def cars(request):
     cars = Car.objects.order_by("-id").all()

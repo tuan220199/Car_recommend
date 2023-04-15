@@ -5,25 +5,81 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        class CarList extends React.Component {
-            constructor(props) {
+       class Pagination extends React.Component{
+            constructor(props){
                 super(props);
-                this.state = {
-                    cars: []
-                };
             }
 
-            componentDidMount() {
-                fetch("api/cars/")
+            render (){
+                return (
+                    <div>
+                        <ul class="pagnigation">
+                            {(this.props.pageNumber-1>0) ? 
+                                <li>
+                                    <button onClick={() => this.props.onPageChange(event,this.props.pageNumber -1)}>Previous</button>
+                                </li>
+                                : <li>DO not have previous</li>
+                            } 
+                            <li>{this.props.pageNumber}</li>
+                            {(this.props.pageNumber+1<this.props.numberPages+1) ?
+                                <li>
+                                    <button onClick={() => this.props.onPageChange(event,this.props.pageNumber+1)}>Next</button>    
+                                </li>
+                                : <li>Do not have next</li>
+                            }
+                        </ul>
+
+                    </div>
+                );
+            }
+       }
+        class Total extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    carList: [],
+                    numberPage:232,
+                    currentPage: 1
+                };
+                this.handlePageChange = this.handlePageChange.bind(this);
+            }
+            
+            async fetchData(current_page){
+                fetch(`api/pagnigation/?page=${current_page}`)
                     .then(response => response.json())
-                    .then(data => this.setState({ cars: data.cars }));
+                    .then(data => this.setState({ 
+                        carList: data.results,
+                        numberPage:Math.ceil(data.count/10),
+                        currentPage: data.num_pages 
+                    }))
+                    .catch(error => console.error(error));
+                    
+            }
+
+            handlePageChange(event, value) {
+                console.log(this.state.currentPage);
+                this.setState({
+                currentPage: value,
+                });
+            }
+
+            componentDidMount(){
+                this.fetchData(this.state.currentPage);
+            }
+
+            componentDidUpdate(prevProps, prevState) {
+                if (prevState.currentPage !== this.state.currentPage) {
+                this.fetchData(this.state.currentPage);
+                }
             }
 
             render() {
-                const { cars } = this.state;
+                const data = this.state.carList;
+                
+
                 return (
                     <div>
-                        {cars.map(car => (
+                        {data && data.map((car) => (
                             <div key={car["id"]}>
                                 <div class="col-12">
                                 <article class="card car-details label-info sponsored">
@@ -34,7 +90,7 @@
                                             </div>
                                             <div class="w-100">
                                                 <div class="d-flex flex-md-row flex-column">
-                                                    <h3 class="mr-3">{car["model"]}</h3>
+                                                    <h3 class="mr-3">{car['mark_category']} {car["model"]}</h3>
                                                     <div class="ml-auto text-right">
                                                         <h3>${car["price"]}</h3>
                                                         <ul class="rating">
@@ -83,10 +139,13 @@
                                 </div>
                             </div>   
                         ))}
+
+                        <Pagination pageNumber={this.state.currentPage} numberPages={this.state.numberPage} onPageChange={this.handlePageChange}/>
                     </div>
                 );
             }
         }
-        ReactDOM.render(<CarList />, document.getElementById("root"))
+
+        ReactDOM.render(<Total />, document.getElementById("root"))
     </script>
 {% endblock %}
