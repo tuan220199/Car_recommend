@@ -5,25 +5,35 @@
     <div id="root"></div>
 
     <script type="text/babel">
-       class Pagination extends React.Component{
+        
+        //This class component is Pagination component 
+        // Inherit the props data from its parent component with 1 attribute (this.props.pageNumber) and 1 method (this.props.onPageChange)
+        class Pagination extends React.Component{
             constructor(props){
                 super(props);
             }
 
+            // render a list of 3 items of previous, current and next page
             render (){
+
+                // Declare the this.props data in this scope
+                // For the next page, make sure the page is not add with string, it is a plus for 2 number integer
+                const prevPage = this.props.pageNumber - 1;
+                const nextPage = +this.props.pageNumber + 1;
                 return (
                     <div>
                         <ul class="pagnigation">
-                            {(this.props.pageNumber-1>0) ? 
+                            {/* This is the if condition shortcut in return part in a React component*/}
+                            {(prevPage>0) ? 
                                 <li>
-                                    <button onClick={() => this.props.onPageChange(event,this.props.pageNumber -1)}>Previous</button>
+                                    <button onClick={() => this.props.onPageChange(event,prevPage)}>{prevPage}</button>
                                 </li>
                                 : <li>DO not have previous</li>
                             } 
                             <li>{this.props.pageNumber}</li>
-                            {(this.props.pageNumber+1<this.props.numberPages+1) ?
+                            {(nextPage<this.props.numberPages+1) ?
                                 <li>
-                                    <button onClick={() => this.props.onPageChange(event,this.props.pageNumber+1)}>Next</button>    
+                                    <button onClick={() => this.props.onPageChange(event,nextPage +1)}>{nextPage}</button>    
                                 </li>
                                 : <li>Do not have next</li>
                             }
@@ -33,7 +43,15 @@
                 );
             }
        }
+
+       // This class component is the total component include other component 
+       // Now it includes Pagination class component 
         class Total extends React.Component{
+            
+            // It has the this.state is defined at first 
+            // carList represents the list/array of the car in one paginated page
+            // numberPage represents for the number of pages
+            // currentPage represents for the current page 
             constructor(props){
                 super(props);
                 this.state = {
@@ -41,38 +59,58 @@
                     numberPage:232,
                     currentPage: 1
                 };
+
+                // bind the function handlePageChange in the boundary of "this" class scope
                 this.handlePageChange = this.handlePageChange.bind(this);
             }
-            
+            //The async keyword is used in this function to indicate that it is an asynchronous function.
+            // An asynchronous function is a function that does not block the execution of the rest of the code while it is waiting for a response.
+            // In other words, the function does not wait for the response from the fetch() method before moving on to the next line of code.
+            // This is the fetchData function which everytime is called will fetch the input "currentp_page" url with api
+            // Then setState of this.state of the class to update the number th of the current page and all the car items are paginated int his page
             async fetchData(current_page){
-                fetch(`api/pagnigation/?page=${current_page}`)
+                await fetch(`api/pagnigation/?page=${current_page}`)
                     .then(response => response.json())
                     .then(data => this.setState({ 
                         carList: data.results,
-                        numberPage:Math.ceil(data.count/10),
+                        numberPage:data.count,
                         currentPage: data.num_pages 
                     }))
                     .catch(error => console.error(error));
-                    
             }
 
+            //The event parameter in this function is typically used to capture any events associated 
+            // with the pagination control, such as a click or keypress event
+            // This function will setState pf the this.state.currentPage to the "value" input  
             handlePageChange(event, value) {
-                console.log(this.state.currentPage);
                 this.setState({
                 currentPage: value,
                 });
             }
 
+            // This method is called after a component has been mounted (inserted into the DOM tree) for the first time.
+            // It is commonly used to initiate requests to fetch data from an external API or to set up event listeners. 
+            // By the time componentDidMount() is called, the component's render method has already been called, and the  
+            //component's element has been added to the DOM. And for the initial first time the element is added to DOM 
+            // the function fetchData is called
             componentDidMount(){
                 this.fetchData(this.state.currentPage);
             }
 
+            // componentDidUpdate() is another lifecycle method in React, which is called after a component's update has been flushed to the DOM. 
+            // It is called immediately after the component re-renders due to a change in its state or props.
+            // prevProps and prevState, which represent the previous props and state of the component before the update. 
+            // So everytime the currentPage is updated, then it will excute the code, in this case is called new fetchData function to update new list of car and number of page
             componentDidUpdate(prevProps, prevState) {
                 if (prevState.currentPage !== this.state.currentPage) {
                 this.fetchData(this.state.currentPage);
                 }
             }
 
+            // The working flow of this coponent is:
+            // Firstly, the handlepgaeChange is called (by the button clicked from the Pagination component) => output: setState for this.data.currentPage
+            // Secondly, when the this.data.currentPage is updated, which activate the componentDidUpdate (when they compare prevState.currentPage !== this.state.currentPage) 
+            // => output: call fetchData function, fetchData function is called then fetch data from API, then setState for the this.state.... data 
             render() {
                 const data = this.state.carList;
                 

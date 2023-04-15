@@ -8,15 +8,22 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from .models import *
+import math
 
 
 def index(request):
-    cars = Car.objects.order_by("-id").all()
-    return render(request, "car/index.html", {
-        'cars': cars
-    })
+    return render(request, "car/index.html")
+
+
 
 def pagnigation(request):
+    """
+    This function paginates a list of cars and returns a JSON response with the paginated data.
+    It is noted that every page_obj has 10 car items 
+    This API is special because generate api/${page} but it still can fetch that sample
+    :return: a JSON response containing a list of serialized Car objects, the total count of cars
+    divided by 10 (to determine the number of pages), and the current page number.
+    """
     cars = Car.objects.order_by("-id").all()
 
     #Pagination 
@@ -30,15 +37,24 @@ def pagnigation(request):
 
     data = {
         'results': car_list,
-        'count': paginator.count,
+        'count': math.ceil(paginator.count/10),
         'num_pages': page_number,
     }
 
     return JsonResponse(data)
 
 
-
 def cars(request):
+    """
+    This function retrieves all Car objects from the database and returns them as a JSON response.
+    
+    :param request: The request parameter is an object that represents the HTTP request made by the
+    client to the server. It contains information such as the HTTP method used (GET, POST, etc.), the
+    URL requested, any query parameters, headers, and more. In this case, it is used to retrieve a list
+    of
+    :return: A JSON response containing serialized data of all Car objects in the database, ordered by
+    their ID in descending order.
+    """
     cars = Car.objects.order_by("-id").all()
     return JsonResponse([car.serialize() for car in cars], safe=False)
 
