@@ -293,3 +293,127 @@ li {
     height: auto; /* set the height of the image to auto to maintain aspect ratio */
     object-fit: cover; /* scale the image to cover the entire container */
   }
+
+  .page-item {
+    background-color: royalblue;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #333;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    padding-left: 0px;
+    padding-right:  0px;
+    text-align: center;
+    transition: background-color .3s ease;
+}
+
+.page-item :hover {
+    background-color: #eee;
+    color: #333;
+}
+
+.page-item.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Alegreya+Sans:300);
+
+body {
+    font-family: 'Alegreya Sans', sans-serif;
+}
+
+/* Sticky footer position and size
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 300px;
+}
+.footer {
+  position: absolute;
+  margin-top: 100px;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 100px;
+  padding-bottom: 300px;
+}
+
+/* Taller footer on small screens */
+@media (max-width: 567em) {
+    body {
+      margin-bottom: 300px;
+    }
+    .footer {
+      height: 300px;
+    }
+}
+
+/* Sticky footer style and color
+-------------------------------------------------- */
+footer {
+  padding-top: 30px;
+  margin-top: 100px;
+  background-color: #292c2f;
+  color: #bbb;
+}
+
+footer a {
+  color: #999;
+  text-decoration:none;
+}
+
+footer a:hover, footer a:focus {
+  color: #aaa;
+  text-decoration:none;
+  border-bottom:1px dotted #999;
+}
+
+footer .form-control {
+    background-color: #1f2022;
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    border: none;
+    resize: none;
+    color: #d1d2d2;
+    padding: 0.7em 1em;
+}
+
+.category_brand {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  font-size: 18px;
+  text-align: center;
+  width: calc(25% - 20px);
+  max-width: 200px;
+}
+
+.list_categories {
+  list-style: none;
+  margin: 0;
+  padding: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.image_brand {
+  width: 50px;
+  height: 50px;
+}
+
+.category_name {
+  font-family: Arial, sans-serif;
+}

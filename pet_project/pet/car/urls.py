@@ -7,8 +7,11 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
 
-    #API path
-    path("api/cars/", views.cars, name="cars"),
-    path("api/pagnigation/", views.pagnigation, name="pagnigation")
+    path("categories", views.categories, name="categories"),
     
+    #API path
+    path("api/category/<int:category_id>/", views.category_each_brand_api, name="category_each_brand_api"),
+    path("api/cars/", views.cars_api, name="cars"),
+    path("api/pagnigation/", views.pagnigation_api, name="pagnigation"),
+    path("api/categories/", views.categories_api, name="categories_api")
 ]

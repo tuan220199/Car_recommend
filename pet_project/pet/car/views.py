@@ -14,9 +14,37 @@ import math
 def index(request):
     return render(request, "car/index.html")
 
+def categories(request):
+    return render(request, "car/categories.html")
+
+def category_each_brand_api(request, category_id):
+    category = Category.objects.get(pk=category_id)
+    cars = Car.objects.order_by("-id").filter(mark_category=category)
+
+    #Pagination 
+    paginator = Paginator(cars, 10) # Show 10 posts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    car_list = []
+    for car in page_obj:
+        car_list.append(car.serialize())
+
+    data = {
+        'results': car_list,
+        'count': math.ceil(paginator.count/10),
+        'num_pages': page_number,
+    }
+
+    return JsonResponse(data)
 
 
-def pagnigation(request):
+def categories_api(request):
+    categories = Category.objects.all()
+    return JsonResponse([category.serialize() for category in categories], safe=False)
+
+
+def pagnigation_api(request):
     """
     This function paginates a list of cars and returns a JSON response with the paginated data.
     It is noted that every page_obj has 10 car items 
@@ -44,7 +72,7 @@ def pagnigation(request):
     return JsonResponse(data)
 
 
-def cars(request):
+def cars_api(request):
     """
     This function retrieves all Car objects from the database and returns them as a JSON response.
     

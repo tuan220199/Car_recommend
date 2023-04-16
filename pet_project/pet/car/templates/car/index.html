@@ -15,29 +15,39 @@
 
             // render a list of 3 items of previous, current and next page
             render (){
-
-                // Declare the this.props data in this scope
+                    // Declare the this.props data in this scope
                 // For the next page, make sure the page is not add with string, it is a plus for 2 number integer
                 const prevPage = this.props.pageNumber - 1;
                 const nextPage = +this.props.pageNumber + 1;
                 return (
-                    <div>
-                        <ul class="pagnigation">
-                            {/* This is the if condition shortcut in return part in a React component*/}
-                            {(prevPage>0) ? 
-                                <li>
-                                    <button onClick={() => this.props.onPageChange(event,prevPage)}>{prevPage}</button>
-                                </li>
-                                : <li>DO not have previous</li>
-                            } 
-                            <li>{this.props.pageNumber}</li>
-                            {(nextPage<this.props.numberPages+1) ?
-                                <li>
-                                    <button onClick={() => this.props.onPageChange(event,nextPage +1)}>{nextPage}</button>    
-                                </li>
-                                : <li>Do not have next</li>
-                            }
-                        </ul>
+                    <div id="pagination">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                { prevPage>0 &&
+                                    <React.Fragment>
+                                    <li class="page-item">
+                                        <button onClick={() => this.props.onPageChange(event,prevPage)}><span aria-hidden="true">&laquo;</span></button>
+                                    </li>
+                                    <li class="page-item">
+                                        <button onClick={() => this.props.onPageChange(event,prevPage)}>{prevPage}</button>
+                                    </li>
+                                    </React.Fragment>
+                                }
+                                <li class="page-item"><button onClick={() => this.props.onPageChange(event,this.props.pageNumber)}>{this.props.pageNumber}</button></li>
+                                { nextPage<this.props.numberPages+1 &&
+                                    <React.Fragment>
+                                        <li class="page-item">
+                                            <button onClick={() => this.props.onPageChange(event,nextPage +1)}>{nextPage}</button>    
+                                        </li>
+                                        <li class="page-item">
+                                            <button onClick={() => this.props.onPageChange(event,nextPage +1)}>
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </button>
+                                        </li>
+                                    </React.Fragment>
+                                }
+                            </ul>
+                        </nav>
 
                     </div>
                 );
