@@ -37,10 +37,10 @@
                                 { nextPage<this.props.numberPages+1 &&
                                     <React.Fragment>
                                         <li class="page-item">
-                                            <button onClick={() => this.props.onPageChange(event,nextPage +1)}>{nextPage}</button>    
+                                            <button onClick={() => this.props.onPageChange(event,nextPage)}>{nextPage}</button>    
                                         </li>
                                         <li class="page-item">
-                                            <button onClick={() => this.props.onPageChange(event,nextPage +1)}>
+                                            <button onClick={() => this.props.onPageChange(event,nextPage)}>
                                                 <span aria-hidden="true">&raquo;</span>
                                             </button>
                                         </li>
