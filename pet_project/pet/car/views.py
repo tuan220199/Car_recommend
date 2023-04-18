@@ -12,14 +12,66 @@ import math
 from django.contrib.auth.decorators import user_passes_test
 
 # Function is_superuser to check if the account is super user or not
-def is_superuser(user):
-    return user.is_superuser
+#def is_superuser(user):
+#    return user.is_superuser
 
 def index(request):
     return render(request, "car/index.html")
 
 def categories(request):
     return render(request, "car/categories.html")
+
+def estimate_price(request):
+    if request.method == "POST":
+
+        # Retrieve dat from form
+        model = request.POST["model"]
+        year = float(request.POST["year"])
+        mileage = float(request.POST["mileage"])
+        engine_capacity = float(request.POST["engine_capacity"])
+        transmission = request.POST["transmission"]
+        drive = request.POST["drive"]
+        hand_drive = request.POST["hand_drive"]
+        fuel = request.POST["fuel"]
+        image_url = request.POST["image_url"]
+        
+        return render(request, "car/estimate_price_result.html")
+    else:
+        return render(request, "car/estimate_price_form.html")
+
+@login_required
+def own_car_post(request):
+    current_user = request.user
+    return render(request, "car/own_car_post.html",{
+        "user_id": current_user.id
+    })
+
+def own_car_post_api(request):
+    try:
+        owner = request.user
+        cars = Car.objects.order_by("-id").filter(owner=owner)
+
+        #Pagination 
+        paginator = Paginator(cars, 10) # Show 10 posts per page.
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        car_list = []
+        for car in page_obj:
+            car_list.append(car.serialize())
+
+        data = {
+            'results': car_list,
+            'count': math.ceil(paginator.count/10),
+            'num_pages': page_number,
+        }
+
+        return JsonResponse(data)
+
+    except Exception as e:
+        # Log the error to the console for debugging purposes.
+        print(e)
+        return JsonResponse({'error': 'Something went wrong.'})
 
 @login_required
 def create_new_car_post(request):

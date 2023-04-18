@@ -25,6 +25,15 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+                                        <path fill="#818B9A" d="M12 3C6.48 3 2 7.48 2 12s4.48 9 10 9 10-4.48 10-9c0-2.18-.76-4.18-2-5.77L12 21l-7-3.77C2.76 7.82 2 9.82 2 12c0 4.52 4.48 8 10 8s10-3.48 10-8-4.48-10-10-10zm0 16c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                      </svg>
+                                                                   
+                                    <a class="nav-link" style="display: inline-block;" href="{% url 'estimate_price' %}">Estimate Price</a>
+                                </li>
+
                             {% if user.is_authenticated %}
                                 <li class="nav-item">
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><!--lit-node 10-->
@@ -59,7 +68,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="#">Profile</a></li>
                                         <li><a class="dropdown-item" href="#">Watch List</a></li>
-                                        <li><a class="dropdown-item" href="#">Your car posts</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'own_car_post' %}">Your car posts</a></li>
                                         <li><a class="dropdown-item" href="{% url 'logout' %}">Log out</a></li>
                                     </ul>
                                 </li>

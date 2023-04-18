@@ -9,8 +9,11 @@ urlpatterns = [
     path("categories", views.categories, name="categories"),
     path("category/<int:category_id>", views.category_each_brand, name="category_each_brand"),
     path("new_post", views.create_new_car_post, name="create_new_car_post"),
+    path("estimate_price", views.estimate_price, name="estimate_price"),
+    path("own_car_post", views.own_car_post, name="own_car_post"),
 
     #API path
+    path("own_car_post/api/", views.own_car_post_api, name="own_car_post_api"),
     path("category/api/<int:category_id>/", views.category_each_brand_api, name="category_each_brand_api"),
     path("api/cars/", views.cars_api, name="cars"),
     path("api/pagnigation/", views.pagnigation_api, name="pagnigation"),
