@@ -1,0 +1,66 @@
+{% extends "car/layout.html" %}
+{% block title %}Category{% endblock %}
+{% block body %}
+    <div id="root"></div>
+
+    <script type="text/babel">
+        
+        class Category extends React.Component {
+            constructor(props){
+                super(props);
+            }
+
+            render() {
+                return (
+                    <li class="category_brand">
+                        <button onClick={() => this.props.onClickButton(this.props.brand_name_id)} class="button_category_brand">
+                            <img class="image_brand" src={this.props.image_url} alt={this.props.brand_name}/>
+                            <p class="category_name">{this.props.brand_name}</p>
+                        </button>
+                    </li>
+                );
+            }
+        }
+        
+        class Total extends React.Component {
+            constructor(props){
+                super(props);
+                this.state = {
+                    data: []
+                };
+
+                //this.onClickButton = this.onClickButton.bind(this);
+            }
+
+            async fetchData(){
+                await fetch("api/categories/")
+                    .then(response => response.json())
+                    .then(data => this.setState({
+                        data: data
+                    }))
+                    .catch(error => console.error(error));
+            }
+
+            componentDidMount(){
+                this.fetchData();
+            }
+
+            onClickButton(category_id){
+                window.location.href = `category/${category_id}`;
+            }
+
+            render(){
+                const data = this.state.data;
+                return (
+                    <ul class="list_categories">
+                        { data && data.map((category) => (
+                            <Category brand_name={category["groups"]} image_url={category["image_url_brand"]} brand_name_id={category["id"]} onClickButton={this.onClickButton}/>
+                        ))}
+                    </ul>  
+                );
+            }  
+        }
+
+        ReactDOM.render(<Total />, document.getElementById("root"))
+    </script>
+{% endblock %}

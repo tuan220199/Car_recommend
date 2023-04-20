@@ -1,0 +1,153 @@
+{% extends "car/layout.html" %}
+{% block title %}Predict the price result {% endblock %}
+{% block body %}
+
+    <form action="{% url 'create_new_car_post' %}" method="post">
+        <div class="form-body">
+            <div class="row">
+                <div class="form-holder">
+                    <div class="form-content">
+                        <div class="form-items">
+                            <h3>Car Price Prediction Result</h3>
+                            <p>The predicted price is ${{prediction}}, let's post!</p>
+                            <form class="requires-validation" novalidate>
+                                {% csrf_token %}
+                                <div class="col-md-12">
+                                   <input class="form-control" type="text" name="price" value="{{prediction}}" required>
+                                   <div class="valid-feedback">Price field is valid!</div>
+                                   <div class="invalid-feedback">Price field cannot be blank!</div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <input class="form-control" type="text" name="mark_category" value="{{mark_category}}" required>
+                                    <div class="valid-feedback">Brand field is valid!</div>
+                                    <div class="invalid-feedback">Brand field cannot be blank!</div>
+                                 </div>
+
+                                <div class="col-md-12">
+                                    <input class="form-control" type="text" name="model" value="{{model}}" required>
+                                    <div class="valid-feedback">Model field is valid!</div>
+                                    <div class="invalid-feedback">Model field cannot be blank!</div>
+                                </div>
+
+                                <div class="col-md-12" id="selection_year" id="selection_year"></div>                                
+                                <script  type="text/babel">
+                                    const SelectionYear = () => {
+                                        const years = [];
+                                        for (let i = 1990; i <= 2023; i++) {
+                                            years.push(<option key={i} value={i} >{i}</option>);
+                                        }
+                                        return (
+                                            <React.Fragment>
+                                                <select class="form-select mt-3" name="year"  required>
+                                                    <option selected disabled >Year</option>
+                                                    {years}
+                                                </select>
+                                                <div class="valid-feedback">You selected a year!</div>
+                                                <div class="invalid-feedback">Please select a year!</div>
+                                            </React.Fragment>
+                                        );
+                                    };
+                                    ReactDOM.render(<SelectionYear />, document.getElementById("selection_year"))
+                                </script>
+
+                                 <div class="col-md-12">
+                                    <input class="form-control" type="text" name="mileage" value="{{mileage}}" required>
+                                    <div class="valid-feedback">Mileage field is valid!</div>
+                                    <div class="invalid-feedback">Mileage field cannot be blank!</div>
+                                 </div>
+    
+                                <div class="col-md-12">
+                                    <input class="form-control" type="text" name="engine_capacity" value="{{engine_capacity}}" required>
+                                     <div class="valid-feedback">Engine Capacity field is valid!</div>
+                                     <div class="invalid-feedback">Engine Capacity field cannot be blank!</div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <select class="form-select mt-3" name="transmission" required>
+                                        <option selected disabled >Transmission</option>
+                                          <option value="mt" {% if transmission == 'mt' %}selected{% endif %}>mt</option>
+                                          <option value="at" {% if transmission == 'at' %}selected{% endif %}>at</option>
+                                          <option value="cvt" {% if transmission == 'cvt' %}selected{% endif %}>cvt</option>
+                                   </select>
+                                    <div class="valid-feedback">You selected a transmission!</div>
+                                    <div class="invalid-feedback">Please select a transmission!</div>
+                               </div>
+
+                                <div class="col-md-12">
+                                <select class="form-select mt-3" name="drive" required>
+                                    <option selected disabled >Drive</option>
+                                      <option value="4wd"  {% if drive == '4wd' %}selected{% endif %}>4wd</option>
+                                      <option value="awd"  {% if drive == 'awd' %}selected{% endif %}>awd</option>
+                                      <option value="2wd"  {% if drive == '2wd' %}selected{% endif %}>2wd</option>
+                                </select>
+                                <div class="valid-feedback">You selected a drive!</div>
+                                <div class="invalid-feedback">Please select a drive!</div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <select class="form-select mt-3" name="hand_drive" required>
+                                        <option selected disabled >Hand drive</option>
+                                          <option value="lhd" {% if hand_drive == 'lhd' %}selected{% endif %}>lhd</option>
+                                          <option value="rhd" {% if hand_drive == 'rhd' %}selected{% endif %}>rhd</option>
+                                          <option value="center" {% if hand_drive == 'center' %}selected{% endif %}>center</option>
+                                    </select>
+                                    <div class="valid-feedback">You selected a hand drive!</div>
+                                    <div class="invalid-feedback">Please select a hand drive!</div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <select class="form-select mt-3" name="fuel" required>
+                                        <option selected disabled >Fuel</option>
+                                          <option value="hybrid" {% if fuel == 'hybrid' %}selected{% endif %}>hybrid</option>
+                                          <option value="diesel" {% if fuel == 'diesel' %}selected{% endif %}>diesel</option>
+                                          <option value="cng" {% if fuel == 'cng' %}selected{% endif %}>cng</option>
+                                          <option value="gasoline" {% if fuel == 'gasoline' %}selected{% endif %}>gasoline</option>
+                                          <option value="lpg" {% if fuel == 'lpg' %}selected{% endif %}>lpg</option>
+                                    </select>
+                                    <div class="valid-feedback">You selected a fuel!</div>
+                                    <div class="invalid-feedback">Please select a fuel!</div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <input class="form-control" type="text" name="image_url" value="{{image_url}}" required>
+                                     <div class="valid-feedback">Image url field is valid!</div>
+                                     <div class="invalid-feedback">Image url field cannot be blank!</div>
+                                </div>
+                            
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                              <label class="form-check-label">I confirm that all data are correct</label>
+                             <div class="invalid-feedback">Please confirm that the entered data are all correct!</div>
+                            </div>
+                            
+    
+                                <div class="form-button mt-3">
+                                    <button id="submit" type="submit" class="btn btn-primary">Register</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </form>
+    <script>
+        (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.requires-validation')
+        Array.from(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+            }, false)
+        })
+        })()
+    </script>
+{% endblock %}

@@ -10,10 +10,15 @@ from django.core.paginator import Paginator
 from .models import *
 import math
 from django.contrib.auth.decorators import user_passes_test
+from joblib import load
+import numpy as np
 
 # Function is_superuser to check if the account is super user or not
 #def is_superuser(user):
 #    return user.is_superuser
+
+# Load the model from the file
+load_model = load('./saveModels/model.joblib')
 
 def index(request):
     return render(request, "car/index.html")
@@ -25,6 +30,7 @@ def estimate_price(request):
     if request.method == "POST":
 
         # Retrieve dat from form
+        mark_category_input = request.POST["mark_category"]
         model = request.POST["model"]
         year = float(request.POST["year"])
         mileage = float(request.POST["mileage"])
@@ -35,7 +41,21 @@ def estimate_price(request):
         fuel = request.POST["fuel"]
         image_url = request.POST["image_url"]
         
-        return render(request, "car/estimate_price_result.html")
+        x_data = np.array([year, mileage, engine_capacity]).reshape(1,-1)
+        prediction = load_model.predict(x_data)
+        return render(request, "car/estimate_price_result.html", {
+            "model": model,
+            "mark_category":mark_category_input,
+            "year": year,
+            "mileage": mileage,
+            "engine_capacity": engine_capacity,
+            "transmission": transmission,
+            "drive": drive,
+            "hand_drive":hand_drive,
+            "fuel": fuel,
+            "image_url": image_url,
+            "prediction": round(prediction[0])
+        })
     else:
         return render(request, "car/estimate_price_form.html")
 
