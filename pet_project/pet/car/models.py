@@ -20,7 +20,7 @@ class User(AbstractUser):
 
 class Category(models.Model):
     groups = models.CharField(max_length=30)
-    image_url_brand = models.CharField(max_length=100,  blank=True, null=True) 
+    image_url_brand = models.CharField(max_length=1000,  blank=True, null=True) 
 
     def __str__(self):
         return f"{self.groups}" 
@@ -43,7 +43,7 @@ class Car(models.Model):
     drive = models.CharField(max_length=64)
     hand_drive = models.CharField(max_length=64)
     fuel = models.CharField(max_length=64)
-    image_url = models.CharField(max_length=100)
+    image_url = models.CharField(max_length=1000)
 
     mark_category =  models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="category")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="owner")
