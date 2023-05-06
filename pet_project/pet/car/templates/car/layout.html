@@ -67,7 +67,7 @@
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="#">Profile</a></li>
-                                        <li><a class="dropdown-item" href="#">Watch List</a></li>
+                                        <li><a class="dropdown-item" href="{% url  'watch_list' request.user.id %}">Watch List</a></li>
                                         <li><a class="dropdown-item" href="{% url 'own_car_post' %}">Your car posts</a></li>
                                         <li><a class="dropdown-item" href="{% url 'logout' %}">Log out</a></li>
                                     </ul>

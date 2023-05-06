@@ -114,6 +114,35 @@
                 }
             }
 
+            // Function add_to_wathList 
+            // add the data (method:POST) as JSON format into the 
+            // url "watch_list/add/api/${user_id}/"
+            add_to_watchList(car_id_pass) {
+                const car_id =car_id_pass;
+                const data = {"user_watch_list_id": user_id, "car_id": car_id};
+
+                fetch(`watch_list/add/api/${user_id}/`, {
+                    method: "POST",
+                    headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('There was an error!', error);
+                });
+            }
+
             // The working flow of this coponent is:
             // Firstly, the handlepgaeChange is called (by the button clicked from the Pagination component) => output: setState for this.data.currentPage
             // Secondly, when the this.data.currentPage is updated, which activate the componentDidUpdate (when they compare prevState.currentPage !== this.state.currentPage) 
@@ -170,7 +199,7 @@
                                                         <div class="col-12">
                                                             <div class="d-flex flex-md-row flex-column align-items-center justify-content-end">
                                                                 <button class="btn btn-success w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-phone"></i> Contact Seller</button>
-                                                                <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-parking"></i> Park</button>
+                                                                <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-plus"></i> Add to watch list</button>
                                                                 <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>
                                                             </div>
                                                         </div>

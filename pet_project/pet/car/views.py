@@ -20,13 +20,30 @@ import numpy as np
 # Load the model from the file
 load_model = load('./saveModels/model.joblib')
 
+
 def index(request):
-    return render(request, "car/index.html")
+    #Home page 
+    current_user = request.user
+    return render(request, "car/index.html",{
+        "user_id": current_user.id
+    })
+
 
 def categories(request):
+    #Categories page
     return render(request, "car/categories.html")
 
+
 def estimate_price(request):
+    """
+    This function estimates the price of a car based on user input and returns the result in a rendered
+    HTML template.
+    
+    :param request: The request object represents the HTTP request that the user made to the server
+    :return: The function `estimate_price` returns a rendered HTML template with the estimated car price
+    and other input data if the request method is POST, and returns a rendered HTML template for the car
+    price estimation form if the request method is not POST.
+    """
     if request.method == "POST":
 
         # Retrieve dat from form
@@ -60,7 +77,75 @@ def estimate_price(request):
         return render(request, "car/estimate_price_form.html")
 
 @login_required
+def watch_list(request, user_id):
+    user_id = user_id
+    return render(request, "car/watch_list.html",{
+        "user_id": user_id
+    })
+
+@login_required
+def add_watch_list_api(request, user_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    # Retrieve the user_id and car_id
+    data = json.loads(request.body)
+    user_watch_list_id = data['user_watch_list_id']
+    car_id = data['car_id']
+
+    # Find the user object and Car Object related to the id
+    user_watch_list = User.objects.get(pk=user_watch_list_id)
+    list_watch = Car.objects.get(pk=car_id)
+
+    # Create a new pair of watch list between user and car item
+    new_watch_list_pair = Watch_list(
+        user_watch_list = user_watch_list,
+        list_watch = list_watch
+    )
+    new_watch_list_pair.save()
+    
+    return JsonResponse({"message": "Add the car item to the watch list sucessfully"}, status=201)
+
+def watch_list_api(request, user_id):
+    try: 
+        owner = request.user
+        watch_list = Watch_list.objects.order_by("-id").filter(user_watch_list=owner)
+
+        #Pagination 
+        paginator = Paginator(watch_list, 10) # Show 10 posts per page.
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        watch_list_list = []
+        for item in watch_list:
+            watch_list_list.append(item.list_watch.serialize())
+
+        data = {
+            'results': watch_list_list,
+            'count': math.ceil(paginator.count/10),
+            'num_pages': page_number,
+        }
+
+        return JsonResponse(data)
+    except Exception as e:
+        # Log the error to the console for debugging purposes.
+        print(e)
+        return JsonResponse({'error': 'Something went wrong.'})
+
+@login_required   
+
+@login_required
 def own_car_post(request):
+    """
+    The function returns a rendered HTML template with the current user's ID passed as a context
+    variable.
+    
+    :param request: The request object represents the current HTTP request that the user has made to the
+    server. It contains information about the user's request, such as the HTTP method used (GET, POST,
+    etc.), the URL requested, any data submitted in the request, and more
+    :return: The function `own_car_post` returns a rendered HTML template `own_car_post.html` with a
+    context dictionary containing the `id` of the current user.
+    """
     current_user = request.user
     return render(request, "car/own_car_post.html",{
         "user_id": current_user.id
@@ -95,6 +180,14 @@ def own_car_post_api(request):
 
 @login_required
 def create_new_car_post(request):
+    """
+    This function creates a new car post object and saves it into the database based on the data
+    retrieved from a form submitted via a POST request.
+    
+    :param request: The request object represents the HTTP request that the user made to the server
+    :return: an HTTP response redirect to the "index" page if the request method is "POST", and
+    rendering the "create_new_post.html" template if the request method is not "POST".
+    """
     if request.method == "POST":
         
         # current user
@@ -133,6 +226,19 @@ def create_new_car_post(request):
 
 
 def category_each_brand(request, category_id):
+    """
+    This function takes a category ID as input and renders a category template with the category ID
+    passed as a context variable.
+    
+    :param request: The HTTP request object that contains information about the current request, such as
+    the user's session, the requested URL, and any submitted data
+    :param category_id: The category ID is a parameter that is passed to the view function through the
+    URL. It represents the ID of the category that the user wants to view. The view function takes this
+    parameter and uses it to retrieve the relevant data from the database and render the appropriate
+    template
+    :return: This function returns a rendered HTML template "car/category.html" with a context
+    dictionary containing the category_id variable.
+    """
     category_id = category_id
     return render(request, "car/category.html",{
         "category_id": category_id
@@ -140,6 +246,17 @@ def category_each_brand(request, category_id):
 
 
 def category_each_brand_api(request, category_id):
+    """
+    This function retrieves a list of cars belonging to a specific category and returns them in a
+    paginated JSON response.
+    
+    :param request: The HTTP request object containing metadata about the request, such as headers and
+    user information
+    :param category_id: The ID of the category for which we want to retrieve the list of cars
+    :return: A JSON response containing a list of serialized cars belonging to a specific category,
+    along with pagination information such as the total count of cars and the current page number. If an
+    exception occurs, a JSON response with an error message is returned.
+    """
     try:
         category = Category.objects.get(pk=category_id)
         cars = Car.objects.order_by("-id").filter(mark_category=category)
