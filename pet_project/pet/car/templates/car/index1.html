@@ -1,0 +1,194 @@
+{% extends "car/layout.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const user_id = '{{ user_id|escapejs }}';
+        function Pagination(props) {
+            const [prevPage, setPrevPage] = React.useState(0);
+            const [nextPage, setNextPage] = React.useState(0);
+
+            React.useEffect(() => {
+                setPrevPage(props.pageNumber - 1);
+                setNextPage(+props.pageNumber + 1);
+            }, [props.pageNumber]);
+
+            return (
+                <div id="pagination">
+                <nav aria-label="Page navigation example">
+                    <ul className="pagination justify-content-center">
+                    {prevPage > 0 && (
+                        <React.Fragment>
+                        <li className="page-item">
+                            <button onClick={() => props.onPageChange(prevPage)}>
+                            <span aria-hidden="true">&laquo;</span>
+                            </button>
+                        </li>
+                        <li className="page-item">
+                            <button onClick={() => props.onPageChange(prevPage)}>
+                            {prevPage}
+                            </button>
+                        </li>
+                        </React.Fragment>
+                    )}
+                    <li className="page-item">
+                        <button onClick={() => props.onPageChange(props.pageNumber)}>
+                        {props.pageNumber}
+                        </button>
+                    </li>
+                    {nextPage < props.numberPages + 1 && (
+                        <React.Fragment>
+                        <li className="page-item">
+                            <button onClick={() => props.onPageChange(nextPage)}>
+                            {nextPage}
+                            </button>
+                        </li>
+                        <li className="page-item">
+                            <button onClick={() => props.onPageChange(nextPage)}>
+                            <span aria-hidden="true">&raquo;</span>
+                            </button>
+                        </li>
+                        </React.Fragment>
+                    )}
+                    </ul>
+                </nav>
+                </div>
+            );
+            }
+
+        function Total() {
+            const [carList, setCarList] = React.useState([]);
+            const [numberPage, setNumberPage] = React.useState(232);
+            const [currentPage, setCurrentPage] = React.useState(1);
+
+            function handlePageChange(value) {
+                setCurrentPage(value);
+            }
+
+            async function fetchData(currentPage) {
+                try {
+                    const response = await fetch(`api/pagnigation/?page=${currentPage}`);
+                    const data = await response.json();
+                    setCarList(data.results);
+                    setNumberPage(data.count);
+                    setCurrentPage(data.num_pages);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+            }
+
+            React.useEffect(() => {
+                fetchData(currentPage);
+            }, [currentPage]);
+
+            React.useEffect(() => {
+                if (currentPage !== 1) {
+                fetchData(currentPage);
+                }
+            }, [currentPage]);
+
+            function add_to_wathList() {
+                fetch(`watch_list/add/api/${user_id}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.error(
+                    'There has been a problem with your fetch operation:',
+                    error
+                    );
+                });
+            }
+
+            return (
+                <div>
+                    {carList && carList.map((car) => (
+                            <div key={car["id"]}>
+                                <div class="col-12">
+                                <article class="card car-details label-info sponsored">
+                                    <div class="card-body">
+                                        <div class="d-flex flex-md-row align-items-md-start align-items-center flex-column">
+                                            <div class="thumbnail position-relative mb-md-0 mb-3">
+                                                <img src={car["image_url"]} alt={car["model"]} class="image"/>
+                                            </div>
+                                            <div class="w-100">
+                                                <div class="d-flex flex-md-row flex-column">
+                                                    <h3 class="mr-3">{car['mark_category']} {car["model"]}</h3>
+                                                    <div class="ml-auto text-right">
+                                                        <h3>${car["price"]}</h3>
+                                                        <ul class="rating">
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-grey"></i></li>
+                                                            <li><i class="fas fa-star text-grey"></i></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <hr/>
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-12">
+                                                            <ul>
+                                                                <li><i class="fas fa-tachometer-alt"></i> <strong>Millage:</strong> {car["mileage"]}KM </li>
+                                                                <li><i class="fas fa-users"></i> <strong>Prev Owners:</strong> {car['owner']}</li>
+                                                                <li><i class="fas fa-calendar"></i> <strong>Brand: </strong> {car['mark_category']}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Transmission:</strong> {car['transmission']}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Engine Capacity:</strong> {car["engine_capacity"]}</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-8 col-12">
+                                                            <ul>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Fuel Type:</strong> {car["fuel"]} </li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Drive:</strong> {car["drive"]}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Hand Drive:</strong> {car["hand_drive"]}</li>
+                                                                <li data-toggle="tooltip" title="The emission class determines the tax bracket of a vehicle. You can find it under number 14 in the registration certificate part 1 (vehicle registration)."><i class="fas fa-info-circle"></i> <strong>Emission Class:</strong> 1,390cc</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Engine Capacity:</strong> {car["engine_capacity"]}</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="d-flex flex-md-row flex-column align-items-center justify-content-end">
+                                                                <button class="btn btn-success w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-phone"></i> Contact Seller</button>
+                                                                <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" onClick={() => this.add_to_watchList(car["id"])}><i class="fas fa-plus"></i> Add to watch list</button>
+                                                                <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        
+                                    </div>
+                                </article>
+                                </div>
+                            </div>   
+                        ))}
+
+                <Pagination
+                    pageNumber={currentPage}
+                    numberPages={numberPage}
+                    onPageChange={handlePageChange}
+                />
+                </div>
+            );
+            }
+        ReactDOM.render(<Total />, document.getElementById("root"))
+    </script>
+{% endblock %}

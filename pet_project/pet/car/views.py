@@ -24,7 +24,7 @@ load_model = load('./saveModels/model.joblib')
 def index(request):
     #Home page 
     current_user = request.user
-    return render(request, "car/index.html",{
+    return render(request, "car/index2.html",{
         "user_id": current_user.id
     })
 
