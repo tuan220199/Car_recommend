@@ -106,24 +106,41 @@ def add_watch_list_api(request, user_id):
     
     return JsonResponse({"message": "Add the car item to the watch list sucessfully"}, status=201)
 
-def watch_list_api(request, user_id):
-    try: 
+@login_required
+def remove_watch_list_api(request, user_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    # Retrieve the user_watch_list_id and car_id from the request body
+    data = json.loads(request.body)
+    user_watch_list_id = data['user_watch_list_id']
+    car_id = data['car_id']
+
+    try:
+        # Get the Watch_list entry that matches the given conditions
+        watch_list_entry = Watch_list.objects.get(
+            user_watch_list_id=user_watch_list_id,
+            list_watch_id=car_id
+        )
+    except Watch_list.DoesNotExist:
+        return JsonResponse({"error": "Watch_list entry not found."}, status=404)
+
+    # Delete the Watch_list entry
+    watch_list_entry.delete()
+
+    return JsonResponse({"message": "Watch_list entry removed successfully."}, status=200)
+
+def watch_list_api_all(request, user_id):
+    try:
         owner = request.user
         watch_list = Watch_list.objects.order_by("-id").filter(user_watch_list=owner)
-
-        #Pagination 
-        paginator = Paginator(watch_list, 10) # Show 10 posts per page.
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
 
         watch_list_list = []
         for item in watch_list:
             watch_list_list.append(item.list_watch.serialize())
-
+        
         data = {
-            'results': watch_list_list,
-            'count': math.ceil(paginator.count/10),
-            'num_pages': page_number,
+            'results': watch_list_list
         }
 
         return JsonResponse(data)
@@ -132,7 +149,32 @@ def watch_list_api(request, user_id):
         print(e)
         return JsonResponse({'error': 'Something went wrong.'})
 
-@login_required   
+def watch_list_api(request, user_id):
+    try: 
+        owner = request.user
+        watch_list = Watch_list.objects.order_by("-id").filter(user_watch_list=owner)
+
+        #Pagination 
+        paginator = Paginator(watch_list, 2) # Show 2 posts per page.
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        watch_list_list = []
+        for item in page_obj:
+            watch_list_list.append(item.list_watch.serialize())
+
+        data = {
+            'results': watch_list_list,
+            'count': math.ceil(paginator.count/2),
+            'num_pages': page_number,
+        }
+
+        return JsonResponse(data)
+    except Exception as e:
+        # Log the error to the console for debugging purposes.
+        print(e)
+        return JsonResponse({'error': 'Something went wrong.'})
+   
 
 @login_required
 def own_car_post(request):

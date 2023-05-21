@@ -58,11 +58,75 @@
         );
       }
 
+      function AddWatchListButton(props){
+        function add_to_watchList(car_id_pass){
+            const data = {"user_watch_list_id": user_id, "car_id": car_id_pass};
+                fetch(`watch_list/add/api/${user_id}/`, {
+                        method: "POST",
+                        headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error('There was an error!', error);
+                    });
+        }
+
+        function remove_to_watchList(car_id_pass){
+            const data = {"user_watch_list_id": user_id, "car_id": car_id_pass};
+                fetch(`watch_list/remove/api/${user_id}/`, {
+                        method: "POST",
+                        headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error('There was an error!', error);
+                    });
+        }
+
+        return (
+           <React.Fragment>
+                {props.checkState ? (
+                    <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" onClick={() => remove_to_watchList(props.car_id)}><i class='fas fa-check'></i> Already added to watch list</button>
+                )
+                :
+                (
+                    <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" onClick={() => add_to_watchList(props.car_id)}><i class='fas fa-plus'></i> Add to watch list</button>
+                )
+                }
+           </React.Fragment>
+        );
+      }
+
       function Total() {
         const [carList, setcarList] = React.useState([])
         const [numberPage, setnumberPage] = React.useState(232)
         const [currentPage, setcurrentPage] = React.useState(1)
-        
+        const [watchList, setwatchList] = React.useState([])
+
         async function fetchData_pagination(currentPage){
           try {
             const response = await fetch(`api/pagnigation/?page=${currentPage}`);
@@ -86,32 +150,23 @@
 
         React.useEffect(() => {
           fetchData_pagination(currentPage);
+          fetchDataWatchList();
         }, [currentPage]);
 
-        function add_to_watchList(car_id_pass){
-          const car_id = car_id_pass;
-          const data = {"user_watch_list_id": user_id, "car_id": car_id};
+        async function fetchDataWatchList() {
+            try {
+                const response = await fetch(`watch_list/api/all/${user_id}`);
+                const data = await response.json();
+                setwatchList(data.results);
+            } 
+            catch (error) {
+                console.log(error);
+            }
+        }
 
-          fetch(`watch_list/add/api/${user_id}/`, {
-                    method: "POST",
-                    headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error('There was an error!', error);
-                });
+        function checkStateAdd(carId) {
+            const isCarIdExist = watchList.some((element) => element.id === carId);
+            return isCarIdExist;
         }
 
         return (
@@ -163,7 +218,11 @@
                                                         <div class="col-12">
                                                             <div class="d-flex flex-md-row flex-column align-items-center justify-content-end">
                                                                 <button class="btn btn-success w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-phone"></i> Contact Seller</button>
-                                                                <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" onClick={() => add_to_watchList(car["id"])}><i class="fas fa-plus"></i> Add to watch list</button>
+                                                                {/*<button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" id={`add_to_watchlist_${car.id}_button`} onClick={() => add_to_watchList(car["id"])}><i class='fas fa-plus'></i> Add to watch list</button>*/}
+                                                                <AddWatchListButton 
+                                                                    checkState = {checkStateAdd(car["id"])}
+                                                                    car_id = {car["id"]}
+                                                                />
                                                                 <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>
                                                             </div>
                                                         </div>
