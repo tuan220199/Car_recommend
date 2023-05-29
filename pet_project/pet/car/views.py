@@ -83,7 +83,7 @@ def watch_list(request, user_id):
         "user_id": user_id
     })
 
-@login_required
+
 def add_watch_list_api(request, user_id):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
@@ -106,7 +106,6 @@ def add_watch_list_api(request, user_id):
     
     return JsonResponse({"message": "Add the car item to the watch list sucessfully"}, status=201)
 
-@login_required
 def remove_watch_list_api(request, user_id):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
@@ -282,8 +281,10 @@ def category_each_brand(request, category_id):
     dictionary containing the category_id variable.
     """
     category_id = category_id
+    user_id = request.user.id
     return render(request, "car/category.html",{
-        "category_id": category_id
+        "category_id": category_id,
+        "user_id": user_id
     })
 
 

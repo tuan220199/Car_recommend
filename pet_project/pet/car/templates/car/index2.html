@@ -3,140 +3,16 @@
 {% block body %}
     
     <div id="root"></div>
-
+    <script src="static/car/pagination.js" type="text/babel"></script>
+    <script src="static/car/addWatchListButton.js" type="text/babel"></script>
     <script type="text/babel">
       const user_id = '{{ user_id|escapejs }}';
-      function Pagination(props){
-        const [prevPage, setprevPage] = React.useState(props.currentPage-1);
-        const [nextPage, setNextPage] = React.useState(+props.currentPage+1);
-
-        React.useEffect(() => {
-          setprevPage(props.pageNumber-1);
-          setNextPage(+props.pageNumber+1);
-        }, [props.pageNumber]);
-
-        return (
-          <div id="pagination">
-                <nav aria-label="Page navigation example">
-                    <ul className="pagination justify-content-center">
-                    {prevPage > 0 && (
-                        <React.Fragment>
-                        <li className="page-item">
-                            <button onClick={()=> props.onPageChange(prevPage)}>
-                            <span aria-hidden="true">&laquo;</span>
-                            </button>
-                        </li>
-                        <li className="page-item">
-                            <button onClick={()=> props.onPageChange(prevPage)}>
-                            {prevPage}
-                            </button>
-                        </li>
-                        </React.Fragment>
-                    )}
-                    <li className="page-item">
-                        <button onClick={() => props.onPageChange(props.pageNumber)}>
-                        {props.pageNumber}
-                        </button>
-                    </li>
-                    {nextPage < props.numberPages + 1 && (
-                        <React.Fragment>
-                        <li className="page-item">
-                            <button onClick={()=> props.onPageChange(nextPage)}>
-                            {nextPage}
-                            </button>
-                        </li>
-                        <li className="page-item">
-                            <button onClick={()=> props.onPageChange(nextPage)}>
-                            <span aria-hidden="true">&raquo;</span>
-                            </button>
-                        </li>
-                        </React.Fragment>
-                    )}
-                    </ul>
-                </nav>
-                </div>
-        );
-      }
-
-      function AddWatchListButton(props){
-        const [buttonClicked, setButtonClicked] = React.useState(false);
-        function add_to_watchList(car_id_pass){
-            const data = {"user_watch_list_id": user_id, "car_id": car_id_pass};
-                fetch(`watch_list/add/api/${user_id}/`, {
-                        method: "POST",
-                        headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": "{{ csrf_token }}"
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log(data);
-                    })
-                    .catch(error => {
-                        console.error('There was an error!', error);
-                    });
-            setButtonClicked(true);
-        }
-
-        function remove_to_watchList(car_id_pass){
-            const data = {"user_watch_list_id": user_id, "car_id": car_id_pass};
-                fetch(`watch_list/remove/api/${user_id}/`, {
-                        method: "POST",
-                        headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": "{{ csrf_token }}"
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log(data);
-                    })
-                    .catch(error => {
-                        console.error('There was an error!', error);
-                    });
-            setButtonClicked(true);
-        }
-
-        React.useEffect(() => {
-            
-            // Additional logic or actions after button click
-            props.fetchWatchListData(); // Fetch updated watch list data
-            setButtonClicked(false); // Reset buttonClicked state after re-render
-            
-            }, [buttonClicked]);
-
-        return (
-           <React.Fragment>
-                {props.checkState ? (
-                    <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" onClick={() => remove_to_watchList(props.car_id)}><i class='fas fa-check'></i> Already added to watch list</button>
-                )
-                :
-                (
-                    <button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" onClick={() => add_to_watchList(props.car_id)}><i class='fas fa-plus'></i> Add to watch list</button>
-                )
-                }
-           </React.Fragment>
-        );
-      }
 
       function Total() {
-        const [carList, setcarList] = React.useState([])
-        const [numberPage, setnumberPage] = React.useState(232)
-        const [currentPage, setcurrentPage] = React.useState(1)
-        const [watchList, setwatchList] = React.useState([])
+        const [carList, setcarList] = React.useState([]);
+        const [numberPage, setnumberPage] = React.useState(232);
+        const [currentPage, setcurrentPage] = React.useState(1);
+        const [watchList, setwatchList] = React.useState([]);
 
         async function fetchData_pagination(currentPage){
           try {
@@ -233,6 +109,7 @@
                                                                 <AddWatchListButton 
                                                                     checkState = {checkStateAdd(car["id"])}
                                                                     car_id = {car["id"]}
+                                                                    user_id = {user_id}
                                                                     fetchWatchListData={fetchDataWatchList}
                                                                 />
                                                                 <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>
