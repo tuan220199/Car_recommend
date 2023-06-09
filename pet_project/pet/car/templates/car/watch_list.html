@@ -3,59 +3,140 @@
 {% block body %}
     
     <div id="root"></div>
-
+    <script src="/static/car/pagination.js" type="text/babel"></script>
+    <script src="/static/car/addWatchListButton.js" type="text/babel"></script>
     <script type="text/babel">
         const user_id = '{{ user_id|escapejs }}';
-        //This class component is Pagination component 
-        // Inherit the props data from its parent component with 1 attribute (this.props.pageNumber) and 1 method (this.props.onPageChange)
-        class Pagination extends React.Component{
-            constructor(props){
-                super(props);
+
+        function Total (){
+            const [carList, setcarList] = React.useState([]);
+            const [numberPage, setnumberPage] = React.useState(232);
+            const [currentPage, setcurrentPage] = React.useState(1);
+            const [watchList, setwatchList] = React.useState([]);
+
+            async function fetchData_pagination(currentPage){
+                try {
+                    const response = await fetch(`api/${user_id}/?page=${currentPage}`);
+                    const data = await response.json();
+                    setcarList(data.results);
+                    setnumberPage(data.count);
+                    setcurrentPage(data.num_pages);
+                }
+                catch (error){
+                    console.log(error);
+                }
             }
 
-            // render a list of 3 items of previous, current and next page
-            render (){
-                    // Declare the this.props data in this scope
-                // For the next page, make sure the page is not add with string, it is a plus for 2 number integer
-                const prevPage = this.props.pageNumber - 1;
-                const nextPage = +this.props.pageNumber + 1;
-                return (
-                    <div id="pagination">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center">
-                                { prevPage>0 &&
-                                    <React.Fragment>
-                                    <li class="page-item">
-                                        <button onClick={() => this.props.onPageChange(event,prevPage)}><span aria-hidden="true">&laquo;</span></button>
-                                    </li>
-                                    <li class="page-item">
-                                        <button onClick={() => this.props.onPageChange(event,prevPage)}>{prevPage}</button>
-                                    </li>
-                                    </React.Fragment>
-                                }
-                                <li class="page-item"><button onClick={() => this.props.onPageChange(event,this.props.pageNumber)}>{this.props.pageNumber}</button></li>
-                                { nextPage<this.props.numberPages+1 &&
-                                    <React.Fragment>
-                                        <li class="page-item">
-                                            <button onClick={() => this.props.onPageChange(event,nextPage)}>{nextPage}</button>    
-                                        </li>
-                                        <li class="page-item">
-                                            <button onClick={() => this.props.onPageChange(event,nextPage)}>
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </button>
-                                        </li>
-                                    </React.Fragment>
-                                }
-                            </ul>
-                        </nav>
-
-                    </div>
-                );
+            function handlePageChange(value){
+                setcurrentPage(value);
             }
-       }
 
-       // This class component is the total component include other component 
-       // Now it includes Pagination class component 
+            React.useEffect(() => {
+                fetchData_pagination(currentPage);
+            }, []);
+
+            React.useEffect(() => {
+                fetchData_pagination(currentPage);
+                fetchDataWatchList();
+            }, [currentPage]);
+                
+            async function fetchDataWatchList() {
+                try {
+                    const response = await fetch(`api/all/${user_id}`);
+                    const data = await response.json();
+                    setwatchList(data.results);
+                } 
+                catch (error) {
+                    console.log(error);
+                }
+            }
+        
+            function checkStateAdd(carId) {
+                const isCarIdExist = watchList.some((element) => element.id === carId);
+                return isCarIdExist;
+            }
+            return (
+                <div>
+                    {carList && carList.map((car) => (
+                            <div key={car["id"]}>
+                                <div class="col-12">
+                                <article class="card car-details label-info sponsored">
+                                    <div class="card-body">
+                                        <div class="d-flex flex-md-row align-items-md-start align-items-center flex-column">
+                                            <div class="thumbnail position-relative mb-md-0 mb-3">
+                                                <img src={car["image_url"]} alt={car["model"]} class="image"/>
+                                            </div>
+                                            <div class="w-100">
+                                                <div class="d-flex flex-md-row flex-column">
+                                                    <h3 class="mr-3">{car['mark_category']} {car["model"]}</h3>
+                                                    <div class="ml-auto text-right">
+                                                        <h3>${car["price"]}</h3>
+                                                        <ul class="rating">
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-warning"></i></li>
+                                                            <li><i class="fas fa-star text-grey"></i></li>
+                                                            <li><i class="fas fa-star text-grey"></i></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <hr/>
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-12">
+                                                            <ul>
+                                                                <li><i class="fas fa-tachometer-alt"></i> <strong>Millage:</strong> {car["mileage"]}KM </li>
+                                                                <li><i class="fas fa-users"></i> <strong>Prev Owners:</strong> {car['owner']}</li>
+                                                                <li><i class="fas fa-calendar"></i> <strong>Brand: </strong> {car['mark_category']}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Transmission:</strong> {car['transmission']}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Engine Capacity:</strong> {car["engine_capacity"]}</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-8 col-12">
+                                                            <ul>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Fuel Type:</strong> {car["fuel"]} </li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Drive:</strong> {car["drive"]}</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Hand Drive:</strong> {car["hand_drive"]}</li>
+                                                                <li data-toggle="tooltip" title="The emission class determines the tax bracket of a vehicle. You can find it under number 14 in the registration certificate part 1 (vehicle registration)."><i class="fas fa-info-circle"></i> <strong>Emission Class:</strong> 1,390cc</li>
+                                                                <li><i class="fas fa-info-circle"></i> <strong>Engine Capacity:</strong> {car["engine_capacity"]}</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="d-flex flex-md-row flex-column align-items-center justify-content-end">
+                                                                <button class="btn btn-success w-100 mb-md-0 mb-3 mr-md-3 mr-0"><i class="fas fa-phone"></i> Contact Seller</button>
+                                                                {/*<button class="btn btn-default w-100 mb-md-0 mb-3 mr-md-3 mr-0" id={`add_to_watchlist_${car.id}_button`} onClick={() => add_to_watchList(car["id"])}><i class='fas fa-plus'></i> Add to watch list</button>*/}
+                                                                <AddWatchListButton 
+                                                                    checkState = {checkStateAdd(car["id"])}
+                                                                    car_id = {car["id"]}
+                                                                    user_id = {user_id}
+                                                                    fetchWatchListData={fetchDataWatchList}
+                                                                />
+                                                                <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        
+                                    </div>
+                                </article>
+                                </div>
+                            </div>   
+                        ))}
+
+                <Pagination
+                    pageNumber={currentPage}
+                    numberPages={numberPage}
+                    onPageChange={handlePageChange}
+                />
+                </div>
+            );
+        }
+
+        /*
         class Total extends React.Component{
             
             // It has the this.state is defined at first 
@@ -195,7 +276,7 @@
                     </div>
                 );
             }
-        }
+        }*/
 
         ReactDOM.render(<Total />, document.getElementById("root"))
     </script>
