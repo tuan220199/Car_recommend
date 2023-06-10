@@ -186,17 +186,7 @@ li {
 
   /* This style is for each car post in the home page */
 
-  article.card.car-details {
-    border: 1px solid #f8f9fa;
-    box-shadow: 0 0 20px 0px #dee2e6;
-    cursor: pointer;
-    overflow: hidden;
-    -webkit-transition: 0.3s all;
-    -moz-transition: 0.3s all;
-    -ms-transition: 0.3s all;
-    -o-transition: 0.3s all;
-    transition: 0.3s all;
-  }
+  
 
 .card-footer {
    width:100%;
@@ -598,4 +588,41 @@ color: #ff606e;
 
 .valid-feedback{
 color: #2acc80;
+}
+
+
+
+@keyframes hide {
+  0% {
+      opacity: 1;
+      height: 100%;
+  }
+  75% {
+      opacity: 0;
+      height: 100%;
+  }
+  100% {
+      opacity: 0;
+      height: 0px;
+  }
+}
+
+.hide  {
+  float: right;
+}
+
+article.card.car-details {
+  border: 1px solid #f8f9fa;
+  box-shadow: 0 0 20px 0px #dee2e6;
+  cursor: pointer;
+  overflow: hidden;
+  animation-name: hide;
+  animation-fill-mode: forwards;
+  animation-play-state: paused;
+  animation-duration: 2s;
+  -webkit-transition: 0.3s all;
+  -moz-transition: 0.3s all;
+  -ms-transition: 0.3s all;
+  -o-transition: 0.3s all;
+  transition: 0.3s all;
 }

@@ -9,6 +9,7 @@
       const user_id = '{{ user_id|escapejs }}';
 
       function Total() {
+        const isWatchListPage = false;
         const [carList, setcarList] = React.useState([]);
         const [numberPage, setnumberPage] = React.useState(232);
         const [currentPage, setcurrentPage] = React.useState(1);
@@ -110,6 +111,7 @@
                                                                     checkState = {checkStateAdd(car["id"])}
                                                                     car_id = {car["id"]}
                                                                     user_id = {user_id}
+                                                                    isWatchListPage = {isWatchListPage}
                                                                     fetchWatchListData={fetchDataWatchList}
                                                                 />
                                                                 <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>

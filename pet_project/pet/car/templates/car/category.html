@@ -9,6 +9,7 @@
         const user_id = '{{ user_id|escapejs }}';
         
         function Total(){
+            const isWatchListPage = false;
             const [carList, setcarList] = React.useState([]);
             const [numberPage, setnumberPage] = React.useState(232);
             const [currentPage, setcurrentPage] = React.useState(1);

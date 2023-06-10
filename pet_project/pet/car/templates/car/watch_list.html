@@ -9,6 +9,7 @@
         const user_id = '{{ user_id|escapejs }}';
 
         function Total (){
+            const isWatchListPage = true;
             const [carList, setcarList] = React.useState([]);
             const [numberPage, setnumberPage] = React.useState(232);
             const [currentPage, setcurrentPage] = React.useState(1);
@@ -29,6 +30,18 @@
 
             function handlePageChange(value){
                 setcurrentPage(value);
+            }
+
+            function removeCarFromList(carId) {
+                // Alternatively, you can directly modify the DOM using a library like classnames or manually add/remove the CSS class
+                const cardContainer = document.getElementById(`card-${carId}`);
+                if (cardContainer.classList.contains('hide')) {
+                    cardContainer.article.animationPlayState = 'running';
+                    cardContainer.remove();
+                }
+                
+                const updatedCarList = carList.filter(car => car.id !== carId);
+                setcarList(updatedCarList);
             }
 
             React.useEffect(() => {
@@ -58,7 +71,7 @@
             return (
                 <div>
                     {carList && carList.map((car) => (
-                            <div key={car["id"]}>
+                            <div key={car["id"]} id={`card-${car["id"]}`}>
                                 <div class="col-12">
                                 <article class="card car-details label-info sponsored">
                                     <div class="card-body">
@@ -109,7 +122,9 @@
                                                                     checkState = {checkStateAdd(car["id"])}
                                                                     car_id = {car["id"]}
                                                                     user_id = {user_id}
+                                                                    isWatchListPage = {isWatchListPage}
                                                                     fetchWatchListData={fetchDataWatchList}
+                                                                    onRemoveCard = {removeCarFromList}
                                                                 />
                                                                 <button class="btn btn-default w-100"><i class="fas fa-comment"></i> Comments(18)</button>
                                                             </div>
