@@ -3,18 +3,30 @@
 {% block body %}
     
     <div id="root"></div>
+    <!--import the function component: pagination and addWatchListButton-->
     <script src="static/car/pagination.js" type="text/babel"></script>
     <script src="static/car/addWatchListButton.js" type="text/babel"></script>
     <script type="text/babel">
+      // the user_id is passed from the views.py
       const user_id = '{{ user_id|escapejs }}';
 
       function Total() {
+        /* @param: isWatchListPage check wheather the page is watch list page or not
+         * @param: carList represents the all the cards/posts containing all the information
+         * @param: currentPage is the page current in pagination
+         * divided the whole cards/posts of data into pages, 10 cards per page to load data faster
+         * @param: watchList is the watchlist by current user 
+         */
         const isWatchListPage = false;
         const [carList, setcarList] = React.useState([]);
         const [numberPage, setnumberPage] = React.useState(232);
         const [currentPage, setcurrentPage] = React.useState(1);
         const [watchList, setwatchList] = React.useState([]);
 
+        /* function fetchData_pagination with input the currentPage
+         * access API URL to fetch data and then set data into value for parameters in useState 
+         * set value for carList, currentPage, total number of pages (numberPage)
+        */
         async function fetchData_pagination(currentPage){
           try {
             const response = await fetch(`api/pagnigation/?page=${currentPage}`);
@@ -28,19 +40,30 @@
           }
         }
 
+        /* function handlePageChange with input value
+         * set the current page to the new value 
+         * This functions tend to update value of current page when the user move to next or previous page
+        */
         function handlePageChange(value){
           setcurrentPage(value);
         }
 
+        /* Render/execute the function "fetchData_pagination" for the first time
+        */
         React.useEffect(() => {
           fetchData_pagination(currentPage);
         }, []);
 
+        /* Render/execute the function "fetchData_pagination" (the pagination) 
+         * and "fetchDataWatchList" (watch list of user) everytime currrent page is loaded
+        */
         React.useEffect(() => {
           fetchData_pagination(currentPage);
           fetchDataWatchList();
         }, [currentPage]);
 
+        /* function fetchDataWatchList access API URL to fetch data and then set watchList paramter
+        */
         async function fetchDataWatchList() {
             try {
                 const response = await fetch(`watch_list/api/all/${user_id}`);
@@ -52,6 +75,9 @@
             }
         }
 
+        /* function checkStateAdd with input carId, check if this carId is in the watchlist or not
+         * for child component later display in client-side whether it is added or not to the watch list
+        */
         function checkStateAdd(carId) {
             const isCarIdExist = watchList.some((element) => element.id === carId);
             return isCarIdExist;

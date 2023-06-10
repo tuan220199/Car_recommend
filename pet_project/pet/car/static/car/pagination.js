@@ -3,9 +3,13 @@
 const e = React.createElement;
 
 function Pagination(props){
+
+    // Create the previous and next page of the current page with React.useState
+    // props.pageNumber is the parameter passed from the parent 
     const [prevPage, setprevPage] = React.useState(props.pageNumber-1);
     const [nextPage, setNextPage] = React.useState(+props.pageNumber+1);
 
+    // Re-render/ Update the value of previous and next page when the currrent page is updated
     React.useEffect(() => {
       setprevPage(props.pageNumber-1);
       setNextPage(+props.pageNumber+1);
